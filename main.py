@@ -65,8 +65,8 @@ def window_set_top(win_handle):
     shell = win32com.client.Dispatch("WScript.Shell")
     shell.SendKeys('%')
     win32gui.SetForegroundWindow(win_handle)
-    win32gui.SetWindowPos(win_handle, win32con.HWND_TOPMOST, 0, 0, 0, 0, win32con.SWP_NOMOVE | win32con.SWP_NOSIZE |
-                          win32con.SWP_SHOWWINDOW)
+    # win32gui.SetWindowPos(win_handle, win32con.HWND_TOPMOST, 0, 0, 0, 0, win32con.SWP_NOMOVE | win32con.SWP_NOSIZE |
+    #                       win32con.SWP_SHOWWINDOW)
     win32api.SendMessage(win_handle, win32con.WM_INPUTLANGCHANGEREQUEST, 0, 0x0409)
 
 
@@ -76,18 +76,38 @@ def window_cancel_top(win_handle):
                           win32con.SWP_SHOWWINDOW)
 
 
-def close_window(win_handle):
-    win32gui.PostMessage(win_handle, win32con.WM_CLOSE, 0, 0)
+def close_window_v1():
+    # win32gui.PostMessage(win_handle, win32con.WM_CLOSE, 0, 0)
+    # ESC
+    win32api.keybd_event(27, 0, 0, 0)
+    win32api.keybd_event(27, 0, win32con.KEYEVENTF_KEYUP, 0)
+    time.sleep(0.1)
+    # 斜杠
+    click_left(config.quit_pos)
+
+
+def close_window_v2():
+    # win32gui.PostMessage(win_handle, win32con.WM_CLOSE, 0, 0)
+    # alt
+    win32api.keybd_event(18, 0, 0, 0)
+    time.sleep(0.1)
+    # F4
+    win32api.keybd_event(115, 0, 0, 0)
+    time.sleep(0.1)
+    win32api.keybd_event(115, 0, win32con.KEYEVENTF_KEYUP, 0)
+    win32api.keybd_event(18, 0, win32con.KEYEVENTF_KEYUP, 0)
 
 
 def click_left(pos: tuple):
     win32api.SetCursorPos(pos)
+    time.sleep(0.5)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, pos[0], pos[1], 0, 0)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, pos[0], pos[1], 0, 0)
 
 
 def double_click_left(pos: tuple):
     win32api.SetCursorPos(pos)
+    time.sleep(0.5)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, pos[0], pos[1], 0, 0)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, pos[0], pos[1], 0, 0)
     time.sleep(0.1)
@@ -96,28 +116,12 @@ def double_click_left(pos: tuple):
 
 
 def back_to_role_list():
-    # 回车
-    win32api.keybd_event(13, 0, 0, 0)
-    win32api.keybd_event(13, 0, win32con.KEYEVENTF_KEYUP, 0)
-    time.sleep(0.1)
+    # ESC
+    win32api.keybd_event(27, 0, 0, 0)
+    win32api.keybd_event(27, 0, win32con.KEYEVENTF_KEYUP, 0)
+    time.sleep(0.5)
     # 斜杠
-    win32api.keybd_event(191, 0, 0, 0)
-    win32api.keybd_event(191, 0, win32con.KEYEVENTF_KEYUP, 0)
-    # c
-    win32api.keybd_event(67, 0, 0, 0)
-    win32api.keybd_event(67, 0, win32con.KEYEVENTF_KEYUP, 0)
-    # a
-    win32api.keybd_event(65, 0, 0, 0)
-    win32api.keybd_event(65, 0, win32con.KEYEVENTF_KEYUP, 0)
-    # m
-    win32api.keybd_event(77, 0, 0, 0)
-    win32api.keybd_event(77, 0, win32con.KEYEVENTF_KEYUP, 0)
-    # p
-    win32api.keybd_event(80, 0, 0, 0)
-    win32api.keybd_event(80, 0, win32con.KEYEVENTF_KEYUP, 0)
-    # 回车
-    win32api.keybd_event(13, 0, 0, 0)
-    win32api.keybd_event(13, 0, win32con.KEYEVENTF_KEYUP, 0)
+    click_left(config.logout_pos)
 
 
 def press_1():
@@ -188,7 +192,7 @@ def get_buff(win_handle, client, choice):
             if string_list:
                 for item in string_list:
                     if '断开' in item:
-                        # close_window(win_handle)
+                        close_window_v2()
                         return
             offline_check = 0
             time.sleep(0.5)
@@ -197,21 +201,24 @@ def get_buff(win_handle, client, choice):
             for item in chat_list:
                 if does_buff_start(choice, item):
                     back_to_role_list()
-                    time.sleep(0.5)
+                    if choice == '1':
+                        time.sleep(25)
+                    else:
+                        time.sleep(1)
                     click_left(config.role1_pos)
                     time.sleep(0.5)
-                    click_left(config.enter_pos)
+                    double_click_left(config.role1_pos)
                     time.sleep(delay_dict[choice])
-                    # close_window(win_handle)
+                    close_window_v1()
                     return
-            time.sleep(0.4)
-        else:
-            return
+        time.sleep(0.5)
         print(time.time() - start_cyc)
 
 
 if __name__ == '__main__':
     input_string = input('选择要挂的buff序号：\r\n1 哈卡\r\n2 龙头\r\n3 酋长\r\n请输入序号并回车：')
+    print('务必5秒内全屏魔兽窗口！！')
+    time.sleep(5)
     # win_handle = win32gui.FindWindow(None, '魔兽世界')
     # win_handle = win32gui.FindWindow('Qt5QWindowIcon', 'OA邮箱')
     ocr_client = AipOcr(APP_ID, API_KEY, SECRET_KEY)
