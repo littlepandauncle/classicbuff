@@ -28,7 +28,7 @@ naifa_string = '萨鲁法尔'
 qiuzhang_string = '黑手'
 
 # 延时定义
-haka_delay = 15
+haka_delay = 48
 longtou_delay = 25
 qiuzhang_delay = 25
 afk_delay_min = 600
