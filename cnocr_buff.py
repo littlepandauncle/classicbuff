@@ -142,6 +142,7 @@ def does_buff_start(choice, pic_text):
 
 def get_buff(win_handle, client, choice):
     offline_check = 0
+    buff_dict = {'1': '哈卡', '2': '龙头', '3': '酋长'}
     start_time = time.time()
     while True:
         if time.time() - start_time >= random.randint(600, 1200):
@@ -156,6 +157,7 @@ def get_buff(win_handle, client, choice):
                 for item in string_list:
                     if '断开' in item:
                         close_window()
+                        print('检测到已掉线，中断程序！')
                         return
             offline_check = 0
         chat_list = get_grab_ocr_result(client, config.chat_range)
@@ -169,6 +171,7 @@ def get_buff(win_handle, client, choice):
                     double_click_left(config.role1_pos)
                     time.sleep(delay_dict[choice])
                     close_window()
+                    print('已成功挂到 %s buff', buff_dict[choice])
                     return
 
 
