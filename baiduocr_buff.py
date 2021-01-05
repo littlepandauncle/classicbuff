@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
 """
 注意点：
 1. 哈卡、龙头、酋长buff分别吃

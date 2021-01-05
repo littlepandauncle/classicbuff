@@ -1,0 +1,22 @@
+{
+    "chat_rectangle": {
+        "left": 0,
+        "top": 540,
+        "right": 900,
+        "bottom": 900
+    },
+    "logout_pixel": {
+        "width": 954,
+        "height": 629
+    },
+    "first_role_pixel": {
+        "width": 1732,
+        "height": 150
+    },
+    "offline_rectangle": {
+        "left": 760,
+        "top": 490,
+        "right": 1160,
+        "bottom": 525
+    }
+}

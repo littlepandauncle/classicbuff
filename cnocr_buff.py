@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
 """
 注意点：
 1. 哈卡、龙头、酋长buff分别吃
@@ -10,6 +13,7 @@
 """
 
 import os
+import json
 from cnocr import CnOcr
 from PIL import ImageGrab
 import time
@@ -68,18 +72,18 @@ def close_window_test():
     print(time_stamp(), '关闭游戏')
 
 
-def click_left(pos: tuple):
+def click_left(pos: list):
     win32api.SetCursorPos(pos)
     time.sleep(0.5)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, pos[0], pos[1], 0, 0)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, pos[0], pos[1], 0, 0)
 
 
-def click_left_test(pos: tuple):
+def click_left_test(pos: list):
     print(time_stamp(), '选中角色1')
 
 
-def double_click_left(pos: tuple):
+def double_click_left(pos: list):
     win32api.SetCursorPos(pos)
     time.sleep(0.5)
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTDOWN, pos[0], pos[1], 0, 0)
@@ -89,7 +93,7 @@ def double_click_left(pos: tuple):
     win32api.mouse_event(win32con.MOUSEEVENTF_LEFTUP, pos[0], pos[1], 0, 0)
 
 
-def double_click_left_test(pos: tuple):
+def double_click_left_test(pos: list):
     print(time_stamp(), '进入角色')
 
 
@@ -187,7 +191,10 @@ def get_buff(win_handle, client, choice):
                 if does_buff_start(choice, item):
                     back_to_role_list()
                     # back_to_role_list_test()
-                    time.sleep(1.5)
+                    if choice == '1':
+                        time.sleep(22)
+                    else:
+                        time.sleep(1.5)
                     click_left(config.role1_pos)
                     # click_left_test(config.role1_pos)
                     time.sleep(0.5)
@@ -211,12 +218,26 @@ if __name__ == '__main__':
     print('    /dismount')
     print('    /use 次级秘法精华')
     print('    /use 强效秘法精华')
-    print(config.chat_range)
-    config.chat_range[0] = int(input('请输入聊天框宽的最左像素值：').strip())
-    config.chat_range[1] = int(input('请输入聊天框高的最上像素值：').strip())
-    config.chat_range[2] = int(input('请输入聊天框宽的最右像素值：').strip())
-    config.chat_range[3] = int(input('请输入聊天框高的最下像素值：').strip())
-    print(config.chat_range)
+    print('读取配置文件像素坐标...')
+    if os.path.isfile('config.json'):
+        json_str = open('config.json', 'r')
+        config_dict = json.load(json_str)
+        config.chat_range[0] = config_dict["chat_rectangle"]["left"]
+        config.chat_range[1] = config_dict["chat_rectangle"]["top"]
+        config.chat_range[2] = config_dict["chat_rectangle"]["right"]
+        config.chat_range[3] = config_dict["chat_rectangle"]["bottom"]
+        config.logout_pos[0] = config_dict["logout_pixel"]["width"]
+        config.logout_pos[1] = config_dict["logout_pixel"]["height"]
+        config.role1_pos[0] = config_dict["first_role_pixel"]["width"]
+        config.role1_pos[1] = config_dict["first_role_pixel"]["height"]
+        config.offline_range[0] = config_dict["offline_rectangle"]["left"]
+        config.offline_range[1] = config_dict["offline_rectangle"]["top"]
+        config.offline_range[2] = config_dict["offline_rectangle"]["right"]
+        config.offline_range[3] = config_dict["offline_rectangle"]["bottom"]
+        print('读取配置文件成功')
+    else:
+        print('配置文件不存在，无法运行程序')
+        exit(1)
     input_string = input('选择要挂的buff序号：\r\n1 哈卡\r\n2 龙头\r\n3 酋长\r\n请输入序号并回车：')
     print('务必5秒内全屏魔兽窗口，并保持魔兽窗口再最前！！')
     time.sleep(5)
