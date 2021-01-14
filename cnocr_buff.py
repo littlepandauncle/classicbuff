@@ -243,5 +243,6 @@ if __name__ == '__main__':
     time.sleep(5)
     # win_handle = win32gui.FindWindow(None, '魔兽世界')
     # win_handle = win32gui.FindWindow('Qt5QWindowIcon', 'OA邮箱')
-    ocr = CnOcr()
+    ocr = CnOcr(root='.')
+    print(ocr._model_dir)
     get_buff(None, ocr, input_string)
